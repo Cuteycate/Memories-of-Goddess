@@ -1,20 +1,26 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Spawner;
 
 public class Enemy : MonoBehaviour
 {
     public float speed;
+    public float health;
+    public float maxHealth;
+    public RuntimeAnimatorController[] animController; //Dùng đề đưa animation enemies vào vd animation 1 zombie animation 2 skeleton
     public Rigidbody2D target;
 
-    bool isLive = true;
+    bool isLive;
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
+    Animator anim;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         spriter = GetComponent<SpriteRenderer>();
     }
     void FixedUpdate()
@@ -42,5 +48,14 @@ public class Enemy : MonoBehaviour
     void OnEnable()
     {
         target = GameManager.instance.player.GetComponent<Rigidbody2D>();
+        isLive = true;
+        health = maxHealth;
+    }
+    public void Init(SpawnData Data)
+    {
+        anim.runtimeAnimatorController = animController[Data.spriteType];
+        speed = Data.speed;
+        maxHealth = Data.health;
+        health = Data.health;
     }
 }
